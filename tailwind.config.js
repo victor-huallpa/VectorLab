@@ -4,6 +4,15 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      // Breakpoint por ALTURA (no ancho). Los breakpoints de Tailwind son
+      // todos por ancho, pero el problema reportado en laptops 1366x720
+      // es de altura: a 1366px de ancho ya estamos en el layout "lg"
+      // (aside + canvas en fila), el que falta es espacio vertical.
+      // `short` cubre laptops de 720-768px de alto reales (menos aún tras
+      // restar la barra del navegador), sin afectar 1440x900 / 1920x1080.
+      screens: {
+        short: { raw: '(max-height: 820px)' },
+      },
       colors: {
         // Paleta "laboratorio nocturno": azul-carbón profundo, no negro puro,
         // para que los paneles y el lienzo del campo vectorial respiren.

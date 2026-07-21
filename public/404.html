@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vector Lab · Cálculo Vectorial</title>
+    <script type="text/javascript">
+      // GitHub Pages no sabe nada de React Router: cualquier ruta que no
+      // sea literalmente un archivo existente (p. ej. /VectorLab/campos-vectoriales)
+      // responde 404 y sirve este archivo. En vez de mostrar un error,
+      // reescribimos la URL como querystring y redirigimos a index.html,
+      // que la vuelve a montar antes de que React arranque (ver index.html).
+      // Técnica estándar: https://github.com/rafgraph/spa-github-pages
+      var pathSegmentsToKeep = 1; // 1 = mantiene "/VectorLab" como base del proyecto
+
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>

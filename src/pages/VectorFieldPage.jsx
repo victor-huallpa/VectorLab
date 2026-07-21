@@ -11,6 +11,7 @@ import HistoryPanel from '../components/vector-field/HistoryPanel.jsx';
 import AnalysisCard from '../components/vector-field/AnalysisCard.jsx';
 import PropertiesPanel from '../components/vector-field/PropertiesPanel.jsx';
 import InterpretationCard from '../components/vector-field/InterpretationCard.jsx';
+import AnalysisTabs from '../components/vector-field/AnalysisTabs.jsx';
 import HelpDrawer from '../components/help/HelpDrawer.jsx';
 import { VECTOR_FIELD_HELP_CONTENT } from '../content/help/vectorFieldHelpContent.js';
 import { exportFieldToPdf } from '../services/exportService.js';
@@ -45,8 +46,8 @@ export default function VectorFieldPage() {
     <div className="flex h-full flex-col">
       <FieldToolbar onExportPdf={handleExportPdf} onSaveHistory={handleSaveHistory} onReset={reset} />
 
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
-        <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:overflow-hidden">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 short:gap-3 short:p-3 lg:short:overflow-hidden">
+        <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:overflow-hidden short:gap-3">
           <aside className="w-full shrink-0 space-y-4 lg:h-full lg:w-80 lg:overflow-y-auto lg:pr-1">
             <FieldForm
               p={p}
@@ -60,7 +61,7 @@ export default function VectorFieldPage() {
             <HistoryPanel onRestore={handleRestore} />
           </aside>
 
-          <section className="relative min-h-[420px] flex-1">
+          <section className="relative min-h-[420px] flex-1 short:min-h-[260px]">
             {validationError ? (
               <div className="flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-surface-sunken text-center">
                 <AlertTriangle size={20} className="text-danger" />
@@ -73,11 +74,25 @@ export default function VectorFieldPage() {
         </div>
 
         {/* Módulo "Análisis del Campo": se actualiza solo, sin botón, cada
-            vez que cambian p, q o el dominio (ver useFieldAnalysis). */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            vez que cambian p, q o el dominio (ver useFieldAnalysis).
+            En pantallas con altura holgada se ve como grid de 3 columnas
+            (comportamiento original, sin cambios). En pantallas cortas
+            (`short`, p. ej. laptops 1366x720) se reemplaza por
+            AnalysisTabs para no empujar el canvas fuera de vista — ver
+            comentario en AnalysisTabs.jsx. */}
+        <div className="grid grid-cols-1 gap-4 short:hidden lg:grid-cols-3">
           <AnalysisCard classification={classification} status={analysisStatus} />
           <PropertiesPanel analysis={analysis} status={analysisStatus} />
           <InterpretationCard interpretation={interpretation} status={analysisStatus} />
+        </div>
+
+        <div className="hidden shrink-0 short:block">
+          <AnalysisTabs
+            classification={classification}
+            analysis={analysis}
+            interpretation={interpretation}
+            status={analysisStatus}
+          />
         </div>
       </div>
 

@@ -3,6 +3,26 @@
 Todos los cambios notables de este proyecto se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [Unreleased]
+
+### Corregido
+
+- **404 en GitHub Pages al acceder o refrescar una ruta interna** (p. ej.
+  `/VectorLab/campos-vectoriales`). Causa: faltaba `base` en Vite para el
+  subpath del proyecto, y GitHub Pages no reescribe rutas de SPA. Solución:
+  `base` condicional en `vite.config.js`, `basename` en el router derivado
+  de `import.meta.env.BASE_URL`, y el par `public/404.html` / `index.html`
+  con la técnica *spa-github-pages* para redirigir sin perder la URL.
+
+### Mejorado
+
+- **Distribución del módulo Campos Vectoriales en pantallas de poca altura**
+  (laptops 1366×720 / 1366×768). Se agregó el breakpoint `short` (por alto,
+  no por ancho) en `tailwind.config.js` y el componente `AnalysisTabs`, que
+  reemplaza el grid de 3 columnas (Análisis / Propiedades / Interpretación)
+  por un selector de pestañas compacto solo en esas resoluciones, priorizando
+  el espacio del canvas. En pantallas grandes el layout no cambió.
+
 ## [0.2.0] — Módulo de Análisis del Campo, Sistema de Ayuda y Reporte PDF profesional
 
 ### Agregado
