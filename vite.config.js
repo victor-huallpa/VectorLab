@@ -6,6 +6,10 @@ import react from '@vitejs/plugin-react';
 // vive en la arquitectura de /src, no en el build tool.
 export default defineConfig({
   plugins: [react()],
+
+  // Nombre exacto del repositorio en GitHub
+  base: '/VectorLab/',
+
   server: {
     port: 5173,
     open: true,
