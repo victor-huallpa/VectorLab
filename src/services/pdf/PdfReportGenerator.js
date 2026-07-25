@@ -1,5 +1,4 @@
 import { jsPDF } from 'jspdf';
-import { formatDate } from '../../utils/formatters.js';
 import { APP_NAME, APP_VERSION, CURRENT_LAB_NAME } from '../../constants/appInfo.js';
 import { FIELD_TYPE_LABELS } from '../../domain/field-analysis/index.js';
 import { getEducationalContent } from '../../content/educational/fieldEducationalContent.js';

@@ -5,7 +5,21 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
 ## [Unreleased]
 
+### Agregado
+
+- **Historial para el módulo "Integrales de Línea"**: `LineIntegralHistoryPanel.jsx`
+  (mismo patrón visual que `HistoryPanel.jsx`), `useHistoryStore.addLineIntegralEntry`
+  y `createLineIntegralHistoryEntry` en `HistoryEntry.js`. El historial sigue siendo
+  uno solo por aplicación (mismo `historyService.js`, mismo LocalStorage); cada
+  entrada trae un discriminador `tipoVisualizacion` y cada panel filtra la lista
+  compartida por su propio tipo. Se puede guardar (botón "Guardar en historial" en
+  `LineIntegralToolbar.jsx`) y restaurar una consulta completa (campo F, curva
+  paramétrica y configuración).
+
 ### Corregido
+
+- **Import sin usar** (`formatDate`) en `PdfReportGenerator.js`, detectado en la
+  auditoría final de código muerto/imports.
 
 - **404 en GitHub Pages al acceder o refrescar una ruta interna** (p. ej.
   `/VectorLab/campos-vectoriales`). Causa: faltaba `base` en Vite para el

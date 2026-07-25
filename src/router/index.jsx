@@ -3,6 +3,7 @@ import { ROUTES } from '../constants/routes.js';
 import MainLayout from '../layouts/MainLayout.jsx';
 import HomePage from '../pages/HomePage.jsx';
 import VectorFieldPage from '../pages/VectorFieldPage.jsx';
+import LineIntegralPage from '../pages/LineIntegralPage.jsx';
 import ComingSoonPage from '../pages/ComingSoonPage.jsx';
 import SettingsPage from '../pages/SettingsPage.jsx';
 import AboutPage from '../pages/AboutPage.jsx';
@@ -45,8 +46,8 @@ export const router = createBrowserRouter(
         },
         {
           path: ROUTES.INTEGRALS.slice(1),
-          element: <ComingSoonPage moduleName="Integrales" />,
-          handle: { title: 'Integrales', subtitle: 'Próximamente' },
+          element: <LineIntegralPage />,
+          handle: { title: 'Integrales de Línea', subtitle: 'Módulo en construcción' },
         },
         {
           path: ROUTES.SETTINGS.slice(1),

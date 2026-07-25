@@ -10,7 +10,8 @@ const ROADMAP = [
   { icon: TrendingUp, name: 'Gradiente', status: 'Próximamente', tone: 'muted' },
   { icon: GitFork, name: 'Divergencia', status: 'Próximamente', tone: 'muted' },
   { icon: RotateCw, name: 'Rotacional', status: 'Próximamente', tone: 'muted' },
-  { icon: Sigma, name: 'Integrales de línea, dobles y triples', status: 'Próximamente', tone: 'muted' },
+  { icon: Sigma, name: 'Integrales de Línea', status: 'En construcción', tone: 'ember' },
+  { icon: Sigma, name: 'Integrales dobles y triples', status: 'Próximamente', tone: 'muted' },
 ];
 
 export default function HomePage() {

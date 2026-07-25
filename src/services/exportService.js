@@ -1,4 +1,5 @@
 import { generateFieldReport } from './pdf/PdfReportGenerator.js';
+import { generateLineIntegralReport } from './pdf/LineIntegralReportGenerator.js';
 
 /**
  * Punto de entrada público de exportación a PDF. Se mantiene como
@@ -26,4 +27,25 @@ import { generateFieldReport } from './pdf/PdfReportGenerator.js';
  */
 export function exportFieldToPdf({ canvas, p, q, config, analysis = null, classification = null, interpretation = null }) {
   return generateFieldReport({ canvas, p, q, config, analysis, classification, interpretation });
+}
+
+/**
+ * Punto de entrada público de exportación a PDF del laboratorio de
+ * Integrales de Línea. Mismo contrato que exportFieldToPdf: recibe el
+ * snapshot del canvas y el estado del laboratorio, y delega el armado
+ * del documento en LineIntegralReportGenerator (que a su vez reutiliza
+ * pdfDrawHelpers.js).
+ *
+ * @param {{
+ *   canvas: HTMLCanvasElement|null,
+ *   field: {p:string, q:string, r?:string},
+ *   curve: {x:string, y:string, z?:string, t0:number, t1:number},
+ *   config: import('../models/LineIntegralConfig.js').LineIntegralConfig,
+ *   result: import('../domain/line-integral/LineIntegralInterpreter.js').ReturnType|null,
+ *   status: 'idle'|'loading'|'success'|'error',
+ * }} params
+ * @returns {string} nombre del archivo PDF generado
+ */
+export function exportLineIntegralToPdf({ canvas, field, curve, config, result, status }) {
+  return generateLineIntegralReport({ canvas, field, curve, config, result, status });
 }

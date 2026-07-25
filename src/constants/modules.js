@@ -43,10 +43,10 @@ export const MODULES = [
   },
   {
     id: 'integrales',
-    label: 'Integrales',
+    label: 'Integrales de Línea',
     icon: 'Sigma',
     route: ROUTES.INTEGRALS,
-    available: false,
+    available: true,
   },
 ];
 

@@ -22,24 +22,28 @@ src/
 ├── components/
 │   ├── ui/            Primitivas reutilizables: Button, Card, Slider, Badge, Toggle, NumberField
 │   ├── layout/         Sidebar, TopBar, MobileNav — el "chrome" de la app
-│   ├── vector-field/   Componentes específicos del módulo actual (Form, Canvas, Toolbar, History,
+│   ├── vector-field/   Componentes del laboratorio "Campos Vectoriales" (Form, Canvas, Toolbar, History,
 │   │                    Tooltip, AnalysisCard, PropertiesPanel, InterpretationCard)
+│   ├── line-integral/  Componentes del laboratorio "Integrales de Línea" (Form, Canvas, Toolbar,
+│   │                    History, ResultPanel) — mismo patrón que vector-field/, store y motor propios
 │   └── help/           Sistema de ayuda genérico (HelpDrawer, HelpSection, HelpCard, HelpExample,
 │                        HelpIconButton) — no exclusivo de ningún laboratorio
 ├── pages/              Una página por ruta. Componen componentes + hooks + stores, no contienen lógica de negocio
 ├── layouts/             MainLayout: sidebar + topbar + <Outlet/>
 ├── router/              createBrowserRouter — única fuente de verdad de rutas y metadatos (título/subtítulo por página)
 ├── hooks/               Lógica reutilizable: debounce, rAF, tamaño de canvas, cómputo del campo vectorial,
-│                        análisis automático del campo (useFieldAnalysis)
+│                        análisis automático del campo (useFieldAnalysis), cómputo de integrales de línea
 ├── domain/              Lógica de dominio pura, sin React. field-analysis/ contiene el motor de
-│                        clasificación y análisis matemático (ver sección 7)
+│                        clasificación y análisis matemático (ver sección 7); line-integral/ contiene
+│                        el cálculo de la integral y el procedimiento paso a paso (ver sección 5.1)
 ├── content/             Contenido de datos puro que consumen los componentes (nunca al revés):
 │                        educational/ (explicaciones por tipo de campo) y help/ (contenido del Help Drawer)
 ├── services/            Capa de datos. Simulan una API. Nunca importan React.
 │   ├── api/httpClient.js   Simulador de latencia/errores de red — el único punto que cambiará al conectar un backend real
 │   └── pdf/                 Generación de reportes PDF (PdfReportGenerator + pdfDrawHelpers), ver sección 8
-├── store/               Zustand. Un store por dominio: campo vectorial, historial, UI (incluye el estado del Help Drawer)
-├── models/              Forma de los datos + validación/sanitización (VectorFieldConfig, HistoryEntry)
+├── store/               Zustand. Un store por dominio: campo vectorial, integrales de línea, historial
+│                        (compartido por ambos, ver §3), UI (incluye el estado del Help Drawer)
+├── models/              Forma de los datos + validación/sanitización (VectorFieldConfig, LineIntegralConfig, HistoryEntry)
 ├── utils/                Funciones puras: parser matemático, escala de color, transformaciones de coordenadas,
 │                        render de canvas, sistema de partículas, validadores, formateadores
 ├── constants/            Rutas, catálogo de módulos del sidebar, íconos, tokens de color para canvas, metadata de la app
@@ -78,7 +82,14 @@ vez de `setTimeout`.
 expone `fetchHistory / saveHistoryEntry / deleteHistoryEntry / clearHistory`
 con la misma forma que tendrían endpoints REST (`GET/POST/DELETE
 /api/history`). Ningún componente sabe que hay un `localStorage.getItem` de
-por medio.
+por medio. El historial es **uno solo para toda la app** (una lista, un
+`useHistoryStore`, un `historyService`): cada entrada trae un discriminador
+`tipoVisualizacion` (`'campo-vectorial-2d'`, `'integral-linea-2d'` o
+`'integral-linea-3d'`), y cada panel de historial (`HistoryPanel.jsx` para
+Campos Vectoriales, `LineIntegralHistoryPanel.jsx` para Integrales de Línea)
+filtra la lista compartida por su propio tipo antes de renderizarla. Esto
+evita duplicar `historyService.js` o el store por cada laboratorio nuevo —
+ver §5.1.
 
 ## 4. Cómo agregar un módulo nuevo (ej. Gradiente)
 
@@ -108,6 +119,32 @@ FieldForm (input del usuario)
    → AnalysisCard / PropertiesPanel / InterpretationCard (renderizan el análisis)
    → FieldToolbar → exportService.exportFieldToPdf → PdfReportGenerator (jsPDF, 3 páginas)
    → useHistoryStore.addEntry → historyService.saveHistoryEntry (LocalStorage)
+```
+
+### 5.1 Flujo de datos del módulo de Integrales de Línea
+
+Mismo patrón exacto que el de arriba, con su propio store y su propio motor
+de dominio — ningún archivo de Campos Vectoriales se toca ni se comparte
+estado con él:
+
+```
+LineIntegralForm (input del usuario: campo F, curva paramétrica, [t0,t1])
+   → useLineIntegralStore (Zustand: field, curve, config)
+      → useLineIntegralComputation (hook: valida + debounce + llama al servicio)
+         → lineIntegralService (Promise simulada)
+            → domain/line-integral (vectorCalculus + LineIntegralInterpreter):
+              evalúa F y r(t), calcula la integral (2D o 3D según config.is3D)
+              y arma el procedimiento paso a paso
+      ← { result, status }
+   → LineIntegralCanvas (reutiliza createTransform/drawAxesAndGrid/drawVectors
+     de utils/coordinateTransform.js y utils/fieldRenderer.js; dibuja además
+     la trayectoria, flechas de orientación y marcadores de inicio/fin)
+   → ResultPanel (renderiza el procedimiento paso a paso y el resultado)
+   → LineIntegralToolbar → exportService.exportLineIntegralToPdf →
+     LineIntegralReportGenerator (jsPDF, 4 páginas, reutiliza
+     pdfDrawHelpers.js)
+   → useHistoryStore.addLineIntegralEntry → historyService.saveHistoryEntry
+     (mismo LocalStorage compartido, ver §3 "Historial en LocalStorage")
 ```
 
 ## 6. Límites conocidos de este MVP

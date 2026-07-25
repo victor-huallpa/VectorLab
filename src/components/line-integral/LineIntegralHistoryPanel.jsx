@@ -4,13 +4,18 @@ import Card, { CardHeader } from '../ui/Card.jsx';
 import { useHistoryStore } from '../../store/useHistoryStore.js';
 import { formatDate } from '../../utils/formatters.js';
 
-export default function HistoryPanel({ onRestore }) {
+/**
+ * Panel de historial para "Integrales de Línea", mismo patrón visual y
+ * de comportamiento que `HistoryPanel.jsx` (Campos Vectoriales): mismo
+ * store (`useHistoryStore`), mismo servicio de persistencia
+ * (`historyService.js`), mismos componentes UI (`Card`, `CardHeader`).
+ * La única diferencia es qué entradas muestra (filtradas por
+ * `tipoVisualizacion`) y qué campos renderiza (campo F + curva
+ * paramétrica, en vez de solo P y Q).
+ */
+export default function LineIntegralHistoryPanel({ onRestore }) {
   const { entries: allEntries, status, loadHistory, removeEntry } = useHistoryStore();
-  // El historial es único por aplicación (ver useHistoryStore.js); cada
-  // panel muestra solo las entradas de su propio dominio, distinguidas
-  // por tipoVisualizacion. Las entradas de Integrales de Línea también
-  // traen `curva`, además de `campoVectorial` — se excluyen aquí.
-  const entries = allEntries.filter((e) => e.tipoVisualizacion === 'campo-vectorial-2d');
+  const entries = allEntries.filter((e) => e.tipoVisualizacion?.startsWith('integral-linea'));
 
   useEffect(() => {
     loadHistory();
@@ -33,7 +38,12 @@ export default function HistoryPanel({ onRestore }) {
           <div key={entry.id} className="flex items-center justify-between gap-3 px-5 py-3">
             <div className="min-w-0">
               <p className="truncate font-mono text-xs text-ink">
-                P={entry.campoVectorial.p} · Q={entry.campoVectorial.q}
+                F=({entry.campoVectorial.p}, {entry.campoVectorial.q}
+                {entry.tipoVisualizacion === 'integral-linea-3d' ? `, ${entry.campoVectorial.r}` : ''})
+              </p>
+              <p className="truncate font-mono text-[11px] text-ink-muted">
+                r(t)=({entry.curva.x}, {entry.curva.y}
+                {entry.tipoVisualizacion === 'integral-linea-3d' ? `, ${entry.curva.z}` : ''})
               </p>
               <p className="mt-0.5 text-[11px] text-ink-muted">{formatDate(entry.fecha)}</p>
             </div>
